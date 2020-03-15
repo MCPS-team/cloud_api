@@ -1,0 +1,57 @@
+# Cloud API
+
+This repository is part of the project for the module Mobile and Cyber-Physical Systems at University of Pisa.
+
+Here are stored the API of the cloud server
+
+...more to come
+
+## Description
+
+Project details go here..
+
+...
+
+## Getting Started
+
+### Dependencies
+
+* npm 
+* nodejs 
+* docker
+
+### Installing
+
+* clone the repository
+* run the command to start a mongodb instance with docker: ```docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.0.4```
+* fill the ```.env``` file according to the ```.env.example``` with the address for the mongodb instance
+* cd into the cloned repo and run the command ```npm install```
+
+### Executing program
+
+* run ```npm run start```
+
+
+## Functionalities
+### Endpoints
+Currently the enpoints are under development. The following are available:
+* ```[POST] /api/upload/images``` to post images up to the limit specified in the variable MAX_IMAGES_UPLOAD in ```.env``` file
+* ```[GET] /api/upload/images``` to retrieve a sample webpage to test the previous endpoint
+
+
+## Authors
+
+Here's the wonderful team working hard for this project:
+* Matteo Baraldo
+* Davide Barasti
+* Luca Roveroni
+* Gianmarco Santi
+
+## Version History
+
+* 0.1
+    * Initial Release
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details
