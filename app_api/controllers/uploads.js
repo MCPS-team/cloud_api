@@ -1,18 +1,11 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const multer = require("multer");
-const bodyParser = require("body-parser");
 require("dotenv/config");
 
-var app = express();
-
-app.use(bodyParser.json());
-
 var Storage = multer.diskStorage({
-  destination: function(req, file, callback) {
+  destination: (req, file, callback) => {
       callback(null, "./Images");
   },
-  filename: function(req, file, callback) {
+  filename: (req, file, callback) => {
       callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
   }
 });
@@ -23,7 +16,7 @@ const upload = multer({
 
 
 const uploadsSaveImages = (req, res) => {
-  upload(req, res, function(err) {
+  upload(req, res, err => {
     if (err) {
         console.log(err)
         return res.end("Something went wrong!");
