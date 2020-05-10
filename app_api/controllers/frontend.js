@@ -1,21 +1,80 @@
 // Import modules
 require("dotenv/config");
+const path = require('path')
+const mongo = require('mongodb').MongoClient;
+const assert = require('assert');
+const getSize = require('get-folder-size');
 
 const getDashboard = (req, res) => {
-  res.render('html/dashboard');
+  var tot_num_potholes;
+  var net_fidelity;
+  var images_size;
+  var db_size;
+  const images_path = process.cwd().toString() + "/views/img";
+
+  mongo.connect("mongodb://127.0.0.1:27017", (err, client) => {
+    assert.equal(null, err);
+   
+    const db = client.db("mcps_project");
+
+    // Get database size and number of potholes
+    db.collection("potholes").stats((err, result) => {
+      assert.equal(null, err);
+      db_size = (result.size / 1024 / 1024).toFixed(2) + ' MB';
+      tot_num_potholes = result.count;
+
+      // Get neural network average fidelity
+      const query = {
+        "$group": {
+          "_id": null,
+          "ProbAvg": {
+            "$avg": "$probability"
+          }
+        }
+      };
+
+      db.collection("potholes").aggregate(query, (err, cursor) => {
+        assert.equal(null, err);
+        cursor.toArray((e, documents) => {
+          net_fidelity = documents[0].ProbAvg.toFixed(2).toString().substring(2, 4) + "%";
+
+          // Images folder size
+          getSize(images_path, (err, size) => {
+            if (err) { throw err; }
+            images_size = (size / 1024 / 1024).toFixed(2) + ' MB';
+
+            const stats = {
+              'num_potholes': tot_num_potholes,
+              'net_avg_prob': net_fidelity,
+              'images_size': images_size,
+              'db_size': db_size
+            }
+
+            res.render('html/dashboard', { 'stats': stats });
+          });
+        });
+
+        client.close();
+      });
+    });    
+  });
 }
 
 const getMap = (req, res) => {
-  // Read pothole from mongodb
-  const pothole1 = {'lat': 43.709969, 'long': 10.399870}
-  const pothole2 = {'lat': 43.708969, 'long': 10.399870}
-  const pothole3 = {'lat': 43.707969, 'long': 10.399870}
-  const pothole4 = {'lat': 43.706969, 'long': 10.399870}
-  const pothole5 = {'lat': 43.705969, 'long': 10.399870}
+  // Read potholes from mongodb
+  mongo.connect("mongodb://127.0.0.1:27017", (err, client) => {
+    assert.equal(null, err);
+   
+    const db = client.db("mcps_project");
 
-  const potholes = [pothole1, pothole2, pothole3, pothole4, pothole5];
+    // Insert multiple documents
+    db.collection("potholes").find().toArray((err, result) => {
+      assert.equal(null, err);
 
-  res.render('html/map', {'potholes': potholes});
+      res.render('html/map', {'potholes': result});
+      client.close();
+    });
+  });
 }
 
 const getAbout = (req, res) => {

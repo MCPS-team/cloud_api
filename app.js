@@ -6,7 +6,6 @@ const logger = require("morgan");
 const path = require("path");
 const bodyParser = require("body-parser");
 const apiRouter = require("./app_api/routes/api");
-const uiRouter = require("./app_api/routes/ui");
 
 // Express app
 const app = express();
@@ -21,8 +20,8 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'views')))
 
 // Routes
-app.use("/api", apiRouter);
-app.use("/", uiRouter);
+app.use("/", apiRouter.routerFrontend);
+app.use("/api", apiRouter.routerBackend);
 
 // Handle the 404 page
 app.use((req, res, next) => {
@@ -34,12 +33,12 @@ app.use((req, res, next) => {
   }
 });
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
+// Error handler
 app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;

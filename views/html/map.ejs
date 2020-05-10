@@ -17,9 +17,16 @@
   <link href="../css/sb-admin-2.min.css" rel="stylesheet">
 
   <!-- Leaflet libs -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.css" />
+  <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/MarkerCluster.Default.css" />
+ 
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>
+  <script type='text/javascript' src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js'></script>
+  <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.4.0/leaflet.markercluster.js'></script>
 
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -74,47 +81,7 @@
     <div id="content-wrapper" class="d-flex flex-column">
 
       <!-- Main Content -->
-      <div id="content">
-
-        <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-          <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-
-          <!-- Topbar Navbar -->
-          <ul class="navbar-nav ml-auto">
-
-            <div class="topbar-divider d-none d-sm-block"></div>
-
-            <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administrator</span>
-                <img class="img-profile rounded-circle" src="">
-              </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
-                </a>
-              </div>
-            </li>
-          </ul>
-        </nav>
-        <!-- End of Topbar -->
+      <div id="content" style="padding-top: 30px;">
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
@@ -142,12 +109,25 @@
                   maxZoom: 18,
                   accessToken: 'pk.eyJ1IjoiZmlvcmVoYXJwZXIiLCJhIjoiY2s5cjU1bTI4MHF5ZjNncXBuaWV4b29uMSJ9.-2papy_6OSydatKMl7Rr8w'
                 }).addTo(mymap);
+	
+                var markerClusters = L.markerClusterGroup();
 
                 potholes.forEach(pothole => {
-                  var marker = L.marker([pothole.lat, pothole.long]).addTo(mymap);
-                  var markerString = "Found at: 12:00 - 12/05/20<br />Latitude: " + pothole.lat + "<br />Longitude: " + pothole.long; 
-                  marker.bindPopup(markerString).openPopup();
+                  var date = pothole.start_at.split(" ");
+                  var correct_date = new Date(date[0]);
+                  var markerString = "<b>Found at:</b> " + date[1].substring(0, 8) +  " - " + correct_date.getDay() + "/" + correct_date.getMonth() + "/" + correct_date.getFullYear() + "<br />";
+                  markerString += "<b>Latitude:</b> " + pothole.latitude + "<br /><b>Longitude:</b> " + pothole.longitude;
+                  markerString += "<br/><b>Pothole:</b> <a href=\"#\" image-url=\"../img/" + pothole.filename;
+                  markerString += "\" perc-photo=\"" + pothole.probability + "\" id=\"showImage\"><i style=\"color: blue; text-decoration: underline;\"></i>Show image</a>";
+                  markerString += "<br/><b>Accelerometer:</b> <a href=\"#showAlertSensor\" id=\"showDataSensor\" data-toggle=\"modal\" data-sensor='" + JSON.stringify(pothole.attached_sensors_data) + "'>";
+                  markerString += "<i style=\"color: blue; text-decoration: underline;\"></i>Show data</a>";
+                  
+                  var marker = L.marker([pothole.latitude, pothole.longitude]).bindPopup(markerString);
+                  
+                  markerClusters.addLayer(marker);
                 });
+
+                mymap.addLayer(markerClusters);
               </script>
           </div>
 
@@ -188,10 +168,43 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div style="padding: 15px;">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
           <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show Pothole Image Modal-->
+  <div class="modal fade" id="showAlertImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Pothole Photo</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
+        <div class="image-body" style="text-align: center; margin: 0 auto; padding: 15px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show Pothole Accelerometer Data-->
+  <div class="modal fade" id="showAlertSensor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="width: 650px; height: 350px;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Accelerometer Data</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
+        <div style="text-align: center; margin: 0 auto; padding: 15px;">
+          <canvas id="sensorPlot" style="width: 625px; height: 250px"></canvas> 
         </div>
       </div>
     </div>
@@ -207,13 +220,70 @@
   <!-- Custom scripts for all pages-->
   <script src="../js/sb-admin-2.min.js"></script>
 
-  <!-- Page level plugins -->
-  <script src="../vendor/chart.js/Chart.min.js"></script>
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
-  <!-- Page level custom scripts -->
-  <script src="../js/demo/chart-area-demo.js"></script>
-  <script src="../js/demo/chart-pie-demo.js"></script>
+  <!-- Show Pothole Image -->
+<script type="text/javascript">
+  $(document).ready( function () {
+    $(document).on("click", "#showImage", function () {
+      var potholeUrl = $(this).attr('image-url');
+      var potholeFidelity = $(this).attr('perc-photo');
+      var potholeImage = "<p>Neural network fidelity: " + potholeFidelity.substring(2, potholeFidelity.length) + "% </p>";
+      potholeImage += "<img src=\"" + potholeUrl + "\" width=\"450px\" />";
+      $(".image-body").html(potholeImage);
+      $('#showAlertImage').modal('show');
+    });
+  });
+  </script>
 
+  <!-- Show Pothole Accelerometer Data -->
+  <script>
+    $("#showAlertSensor").on('shown.bs.modal', function() {
+      var sensor_data = JSON.parse($('#showDataSensor').attr('data-sensor'));
+      var labels = [];
+      var x = [];
+      var y = [];
+      var z = [];
+
+      sensor_data.forEach(reading => {
+        var timestamp = reading.timestamp;
+        var hour_min_sec = timestamp.split(" ")[1].substring(0, 8);
+        labels.push(hour_min_sec);
+        x.push(reading.x);
+        y.push(reading.y);
+        z.push(reading.z);
+      });
+
+      var ctx = document.getElementById('sensorPlot').getContext('2d');
+      var myChart = new Chart(ctx, {
+        "type":"line",
+        "data": {
+            "labels": labels,
+            "datasets": [{
+              "label":"Axis X",
+              "data": x,
+              "fill":false,
+              "borderColor":"rgb(75, 192, 192)",
+              "lineTension":0.1
+            },{
+              "label":"Axis Y",
+              "data": y,
+              "fill":false,
+              "borderColor":"rgb(195, 0, 0)",
+              "lineTension":0.1
+            },{
+              "label":"Axis Z",
+              "data": z,
+              "fill":false,
+              "borderColor":"rgb(52, 83, 180)",
+              "lineTension":0.1
+            }]
+          },
+          "options":{}
+        });
+    });
+    </script>
 </body>
 
 </html>

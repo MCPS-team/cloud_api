@@ -1,18 +1,8 @@
-# Cloud API
+# Description
 
 This repository is part of the project for the module Mobile and Cyber-Physical Systems at University of Pisa.
 
-Here are stored the API of the cloud server
-
-...more to come
-
-## Description
-
-Project details go here..
-
-...
-
-## Getting Started
+Here are stored the API of the cloud server invoked by the edge server.
 
 ### Dependencies
 
@@ -20,29 +10,28 @@ Project details go here..
 * nodejs 
 * docker
 
-### Installing
-
-* clone the repository
-* run the command to start a mongodb instance with docker: ```docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.0.4```
-* fill the ```.env``` file according to the ```.env.example``` with the address for the mongodb instance
-* cd into the cloned repo and run the command ```npm install```
-
-### Executing program
-
-* run ```npm run start```
-
+### Installing & Executing
+* First install nodejs/npm and docker, then:
+* cd ~ && mkdir MongoStorage
+* docker volume create mongo-storage
+* docker run -d -v ~/MongoStorage:/data/db -p 27017-27019:27017-27019 --name mongodb mongo
+* git clone https://github.com/MCPS-team/cloud_api.git
+* cd cloud_api/ && npm start
 
 ## Functionalities
 ### Endpoints
-Currently the enpoints are under development. The following are available:
-* ```[POST] /api/upload/images``` to post images up to the limit specified in the variable MAX_IMAGES_UPLOAD in ```.env``` file
-* ```[GET] /api/upload/images``` to retrieve a sample webpage to test the previous endpoint
+* Frontend APIs:
+* ```[GET] /dashboard``` Show the home page with some statistics
+* ```[GET] /map``` Show the map of the detected potholes
+* ```[GET] /about``` Credits to the authors
 
+* Backend APIs:
+* ```[POST] /api/upload``` Upload detected potholes data from edge server
 
 ## Authors
 
 Here's the wonderful team working hard for this project:
-* Matteo Baraldo
+* Matteo Barato
 * Davide Barasti
 * Luca Roveroni
 * Gianmarco Santi
