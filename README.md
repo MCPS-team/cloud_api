@@ -4,28 +4,26 @@ This repository is part of the project for the module Mobile and Cyber-Physical 
 
 Here are stored the API of the cloud server invoked by the edge server.
 
-### Dependencies
+### Software Requirements
 
-* npm 
-* nodejs 
-* docker
+* NodeJS (with npm)
+* Docker
 
 ### Installing & Executing
-* First install nodejs/npm and docker, then:
-* cd ~ && mkdir MongoStorage
-* docker volume create mongo-storage
-* docker run -d -v ~/MongoStorage:/data/db -p 27017-27019:27017-27019 --name mongodb mongo
-* git clone https://github.com/MCPS-team/cloud_api.git
-* cd cloud_api/ && npm start
+First install nodejs/npm and docker, running docker and:
+* ```cd ~ && mkdir MongoStorage```
+* ```docker volume create mongo-storage```
+* ```docker run -d -v ~/MongoStorage:/data/db -p 27017-27019:27017-27019 --name mongodb mongo```
+* ```git clone https://github.com/MCPS-team/cloud_api.git```
+* ```cd cloud_api/ && npm install && npm start```
 
-## Functionalities
-### Endpoints
-* Frontend APIs:
+### Application Endpoints
+Frontend APIs:
 * ```[GET] /dashboard``` Show the home page with some statistics
 * ```[GET] /map``` Show the map of the detected potholes
 * ```[GET] /about``` Credits to the authors
 
-* Backend APIs:
+Backend APIs:
 * ```[POST] /api/upload``` Upload detected potholes data from edge server
 
 ## Authors
