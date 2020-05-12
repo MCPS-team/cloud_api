@@ -7,7 +7,6 @@ const getSize = require('get-folder-size');
 
 const getDashboard = (req, res) => {
   var tot_num_potholes;
-  var net_fidelity;
   var images_size;
   var db_size;
   var stats = {}

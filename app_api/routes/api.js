@@ -1,7 +1,7 @@
 // Import modules
 const express = require("express");
 const multer = require("multer");
-var upload = multer({ dest: '../../views/img/' });
+var upload = multer({ dest: process.env.IMG_PATH });
 const routerFrontend = express.Router();
 const routerBackend = express.Router();
 

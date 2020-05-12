@@ -4,17 +4,18 @@ const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
 
 const uploadSensorData = (req, res) => {
-  const request_body = req.body;
   var err = false;
 
+  assert.notEqual(undefined, req.body);
+  assert.notEqual(undefined, req.body.data);
 
-  assert.notEqual(undefined, request_body);
-  assert.notEqual(undefined, request_body.data);
-
-  var edge_values = JSON.parse(request_body.data);
+  var edge_values = JSON.parse(req.body.data);
 
   if (edge_values.length >= 1) {
       edge_values.forEach(pothole => {
+
+      delete pothole.start_at;
+      delete pothole.end_at;
 
       assert.notEqual(undefined, pothole.attached_images);
       assert.notEqual(undefined, pothole.attached_images[0].filename);
@@ -27,6 +28,7 @@ const uploadSensorData = (req, res) => {
 
       assert.notEqual(undefined, pothole.attached_sensors_data);
       if (pothole.attached_sensors_data.length >= 1) {
+        pothole.timestamp = attached_sensors_data[0].timestamp;
         pothole.attached_sensors_data.forEach(sensor_value => {
           delete sensor_value.latitude;
           delete sensor_value.longitude;
@@ -49,7 +51,7 @@ const uploadSensorData = (req, res) => {
     const db = client.db("mcps_project");
 
     // Insert multiple documents
-    db.collection("potholes").insertMany(edge_values.data, (err, result) => {
+    db.collection("potholes").insertMany(edge_values, (err, result) => {
       assert.equal(null, err);
       
       if (result.insertedCount >= 1) {

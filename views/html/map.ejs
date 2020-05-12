@@ -113,7 +113,7 @@
                 var markerClusters = L.markerClusterGroup();
 
                 potholes.forEach(pothole => {
-                  var date = pothole.start_at.split(" ");
+                  var date = pothole.timestamp.split(" ");
                   var correct_date = new Date(date[0]);
                   var markerString = "<b>Found at:</b> " + date[1].substring(0, 8) +  " - " + correct_date.getDay() + "/" + correct_date.getMonth() + "/" + correct_date.getFullYear() + "<br />";
                   markerString += "<b>Latitude:</b> " + pothole.latitude + "<br /><b>Longitude:</b> " + pothole.longitude;
