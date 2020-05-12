@@ -88,3 +88,5 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+console.log('Open the home page with: http://localhost:3000/dashboard');

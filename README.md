@@ -16,6 +16,7 @@ First install nodejs/npm and docker, running docker and:
 * ```docker run -d -v ~/MongoStorage:/data/db -p 27017-27019:27017-27019 --name mongodb mongo```
 * ```git clone https://github.com/MCPS-team/cloud_api.git```
 * ```cd cloud_api/ && npm install && npm start```
+in the .env file you can edit MongoDB configurations
 
 ### Application Endpoints
 Frontend APIs:
