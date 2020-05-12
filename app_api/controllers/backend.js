@@ -4,15 +4,17 @@ const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
 
 const uploadSensorData = (req, res) => {
-  const edge_values = req.body;
+  const request_body = req.body;
   var err = false;
 
-  // Remove useless data
-  assert.notEqual(undefined, edge_values);
-  assert.notEqual(undefined, edge_values.data);
 
-  if (edge_values.data.length >= 1) {
-    edge_values.data.forEach(pothole => {
+  assert.notEqual(undefined, request_body);
+  assert.notEqual(undefined, request_body.data);
+
+  var edge_values = JSON.parse(request_body.data);
+
+  if (edge_values.length >= 1) {
+      edge_values.forEach(pothole => {
 
       assert.notEqual(undefined, pothole.attached_images);
       assert.notEqual(undefined, pothole.attached_images[0].filename);
