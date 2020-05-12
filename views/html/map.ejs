@@ -117,8 +117,8 @@
                   var correct_date = new Date(date[0]);
                   var markerString = "<b>Found at:</b> " + date[1].substring(0, 8) +  " - " + correct_date.getDay() + "/" + correct_date.getMonth() + "/" + correct_date.getFullYear() + "<br />";
                   markerString += "<b>Latitude:</b> " + pothole.latitude + "<br /><b>Longitude:</b> " + pothole.longitude;
-                  markerString += "<br/><b>Pothole:</b> <a href=\"#\" image-url=\"../img/" + pothole.filename;
-                  markerString += "\" perc-photo=\"" + pothole.probability + "\" id=\"showImage\"><i style=\"color: blue; text-decoration: underline;\"></i>Show image</a>";
+                  markerString += "<br/><b>Pothole:</b> <a href=\"#\" image-url=\"../img/" + pothole.filename + "\"";
+                  markerString += "perc-photo=\"" + pothole.probability + "\" id=\"showImage\"><i style=\"color: blue; text-decoration: underline;\"></i>Show image</a>";
                   markerString += "<br/><b>Accelerometer:</b> <a href=\"#showAlertSensor\" id=\"showDataSensor\" data-toggle=\"modal\" data-sensor='" + JSON.stringify(pothole.attached_sensors_data) + "'>";
                   markerString += "<i style=\"color: blue; text-decoration: underline;\"></i>Show data</a>";
                   
@@ -229,7 +229,7 @@
     $(document).on("click", "#showImage", function () {
       var potholeUrl = $(this).attr('image-url');
       var potholeFidelity = $(this).attr('perc-photo');
-      var potholeImage = "<p>Neural network fidelity: " + potholeFidelity.substring(2, potholeFidelity.length) + "% </p>";
+      var potholeImage = "<p>Neural network fidelity: " + potholeFidelity.substring(2, 4) + "% </p>";
       potholeImage += "<img src=\"" + potholeUrl + "\" width=\"450px\" />";
       $(".image-body").html(potholeImage);
       $('#showAlertImage').modal('show');

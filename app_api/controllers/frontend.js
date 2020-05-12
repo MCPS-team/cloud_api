@@ -48,7 +48,7 @@ const getDashboard = (req, res) => {
             if (documents.length === 0) {
               stats.net_avg = "0%";
             } else {
-              stats.net_avg = documents[0].ProbAvg.toFixed(2).toString().substring(2, documents[0].ProbAvg.length) + "%";
+              stats.net_avg = documents[0].ProbAvg.toFixed(2).toString().substring(2, 4) + "%";
             }
 
             res.render('html/dashboard', { 'stats': stats });

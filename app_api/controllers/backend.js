@@ -28,7 +28,7 @@ const uploadSensorData = (req, res) => {
 
       assert.notEqual(undefined, pothole.attached_sensors_data);
       if (pothole.attached_sensors_data.length >= 1) {
-        pothole.timestamp = attached_sensors_data[0].timestamp;
+        pothole.timestamp = pothole.attached_sensors_data[0].timestamp;
         pothole.attached_sensors_data.forEach(sensor_value => {
           delete sensor_value.latitude;
           delete sensor_value.longitude;
