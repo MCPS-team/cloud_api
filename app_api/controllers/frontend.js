@@ -1,6 +1,5 @@
 // Import modules
 require("dotenv").config();
-const path = require('path')
 const mongo = require('mongodb').MongoClient;
 const assert = require('assert');
 const getSize = require('get-folder-size');
@@ -12,7 +11,10 @@ const getDashboard = (req, res) => {
   var stats = {}
   const images_path = process.cwd().toString() + "/views/img";
 
-  mongo.connect(process.env.MONGO_URL, (err, client) => {
+  mongo.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, (err, client) => {
     assert.equal(null, err);
    
     const db = client.db(process.env.MONGO_DBNAME);
@@ -41,7 +43,7 @@ const getDashboard = (req, res) => {
         images_size = (size / 1024 / 1024).toFixed(2) + ' MB';
         stats.images_size = images_size;
 
-        db.collection("potholes").aggregate(query, (err, cursor) => {
+        db.collection(process.env.MONGO_COLLECTION).aggregate(query, (err, cursor) => {
           assert.equal(null, err);
   
           cursor.toArray((e, documents) => {
@@ -62,13 +64,16 @@ const getDashboard = (req, res) => {
 
 const getMap = (req, res) => {
   // Read potholes from mongodb
-  mongo.connect("mongodb://127.0.0.1:27017", (err, client) => {
+  mongo.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, (err, client) => {
     assert.equal(null, err);
    
-    const db = client.db("mcps_project");
+    const db = client.db(process.env.MONGO_DBNAME);
 
     // Insert multiple documents
-    db.collection("potholes").find().toArray((err, result) => {
+    db.collection(process.env.MONGO_COLLECTION).find().toArray((err, result) => {
       assert.equal(null, err);
 
       res.render('html/map', {'potholes': result});

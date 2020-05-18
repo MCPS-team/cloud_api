@@ -1,4 +1,5 @@
 // Import modules
+require("dotenv/config");
 const createError = require("http-errors");
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -15,11 +16,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: 'True'}));
-app.use(bodyParser.raw({type: 'application/json'}))
+app.use(bodyParser.urlencoded({ extended: 'True' }));
+app.use(bodyParser.raw({ type: 'application/json' }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'views')))
+app.use(express.static(path.join(__dirname, 'views')));
 
 // Routes
 app.use("/", apiRouter.routerFrontend);

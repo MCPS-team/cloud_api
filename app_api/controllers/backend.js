@@ -45,13 +45,16 @@ const uploadSensorData = (req, res) => {
   }
 
   // Save data on mongodb
-  mongo.connect("mongodb://127.0.0.1:27017", (err, client) => {
+  mongo.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, (err, client) => {
     assert.equal(null, err);
    
-    const db = client.db("mcps_project");
+    const db = client.db(process.env.MONGO_DBNAME);
 
     // Insert multiple documents
-    db.collection("potholes").insertMany(edge_values, (err, result) => {
+    db.collection(process.env.MONGO_COLLECTION).insertMany(edge_values, (err, result) => {
       assert.equal(null, err);
       
       if (result.insertedCount >= 1) {
